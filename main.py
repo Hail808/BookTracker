@@ -1,8 +1,18 @@
 import tracker
 
 print("Initializing...")
-print("Testing...")
 tracker.create_library()
 
-tracker.new_book()
-tracker.display_library()
+while True:
+    print("\n---Menu---")
+    print("1. Display Library")
+    print("2. Adds a Book")
+    print("3. Quit")
+
+    choice = input("\nChoose an option: ")
+    if choice == "1":
+        tracker.display_library()
+    elif choice == "2":
+        tracker.new_book()
+    elif choice == "3":
+        break
