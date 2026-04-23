@@ -47,3 +47,8 @@ def load_library():
 def save_library(cur_library):
     with open(file_name, "w") as file:
         json.dump(cur_library, file, indent=4)
+
+def display_library():
+    library = load_library()
+    for book in library:
+        print(f"{book['id']}. {book['title']} by {book['author']} - {book['status']} | Current Volume: {book['currentVol']} | Current Chapter: {book['currentCh']}")
