@@ -71,6 +71,21 @@ def update_book():
 
     print("\n---Updated Library---")
     display_library()
+
+def delete_book():
+    display_library()
+    cur_library = load_library()
+
+    book_choice = int(input("\nWhich book would you like to delete?: "))
+
+    cur_library.pop(book_choice - 1)
+    for i, book in enumerate(cur_library, start=1):
+        book["id"] = i
+
+    save_library(cur_library)
+
+    print("\n---Updated Library---")
+    display_library()
         
 def display_library():
     library = load_library()
