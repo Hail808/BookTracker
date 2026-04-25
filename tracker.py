@@ -10,33 +10,108 @@ def create_library():
         with open(file_name, "w") as json_file:
             json.dump(library, json_file, indent=4)
 
-def new_book():
-    new_book = read_input()
+def menu():
+    print("\n---Menu---")
+    print("1. Display Library")
+    print("2. Add a Book")
+    print("3. Update a Book")
+    print("4. Delete a Book")
+    print("5. Quit")
 
+    choice = input("\nChoose an option: ")
+    return choice
+
+# ----- Menu options -----
+def display_library():
+    print("\n---Library---")
+    library = load_library()
+
+    for book in library:
+        print(f"{book['id']}. {book['title']} by {book['author']} - {book['status']} | " \
+              f"Current Volume: {book['currentVol']} | Current Chapter: {book['currentCh']}")
+
+def add_book():
+    print("\n---Add a Book---")
     cur_library = load_library()
+
+    new_book = create_book(*get_book_input())
     new_id = len(cur_library) + 1
     new_book["id"] = new_id
 
     add_to_library(new_book, cur_library)
 
-def read_input():
-    book_title = input("Enter book title: ")
-    book_author = input("Enter author: ")
-    book_status = input("Enter reading status: ")
-    book_curVol = input("Enter the current volume you are on: ")
-    book_curCh = input("Enter the current chapter you are on: ")
+    display_library()
+
+def update_book():
+    print("\n---Update a Book---")
+    display_library()
+    cur_library = load_library()
+
+    # Get user book selection
+    while True:
+        try:
+            book_id = int(input("\nWhich book would you like to update?: "))
+            if 1 <= book_id <= len(cur_library):
+                break
+            else:
+                print("Please enter a valid number")
+        except ValueError:
+            print("Please enter a valid number")
+    # Then covert to the corresponding book dictionary
+    selected_book = next(book for book in cur_library if book["id"] == book_id) 
+
+    # Display book value options for user and get value selection
+    key = get_book_value_choice(selected_book)
+    if key == None: # Cancel
+        return
+
+    new_value = input(f"Enter new value for {key}: ")
+    selected_book[key] = new_value
+    save_library(cur_library)
+
+    display_library()
+
+def delete_book():
+    print("\n---Delete a Book---")
+    display_library()
+    cur_library = load_library()
+
+    while True:
+        try:
+            selected_book = int(input("\nWhich book would you like to delete?: "))
+            if 1 <= selected_book <= len(cur_library):
+                break
+            else:
+                print("Please enter a valid number")
+        except ValueError:
+            print("Please enter a valid number")
+
+    delete_from_library(selected_book, cur_library)
+
+    display_library()
+
+# ----- Extended Functions -----
+def create_book(title, author, status, curVol, curCh):
+# create book with no assigned id
     book = {
         "id": 0,
-        "title": book_title,
-        "author": book_author,
-        "status": book_status,
-        "currentVol": book_curVol,
-        "currentCh": book_curCh
+        "title": title,
+        "author": author,
+        "status": status,
+        "currentVol": curVol,
+        "currentCh": curCh
     }
     return book
 
 def add_to_library(book, cur_library):
     cur_library.append(book)
+    save_library(cur_library)
+
+def delete_from_library(book, cur_library):
+    cur_library.pop(book - 1)
+    for i, book in enumerate(cur_library, start=1):
+        book["id"] = i
+        
     save_library(cur_library)
 
 def load_library():
@@ -48,46 +123,33 @@ def save_library(cur_library):
     with open(file_name, "w") as file:
         json.dump(cur_library, file, indent=4)
 
-def update_book():
-    display_library()
-    cur_library = load_library()
+# ----- Get Functions -----
+def get_book_input():
+# get user book without id
+    book_title = input("Enter book title: ")
+    book_author = input("Enter author: ")
+    book_status = input("Enter reading status: ")
+    book_curVol = input("Enter the current volume you are on: ")
+    book_curCh = input("Enter the current chapter you are on: ")
 
-    book_choice = int(input("\nWhich book would you like to update?: "))
-    book_choice = next(book for book in cur_library if book["id"] == book_choice)
+    return book_title, book_author, book_status, book_curVol, book_curCh
 
-    book_values = list(book_choice.items())
+def get_book_value_choice(book):
+    book_values = list(book.items())
     for i, (key, value) in enumerate(book_values[1:], start=1):
         print(f"{i}. {key}: {value}")
     print(f"{len(book_values)}. Cancel")
-    value_choice = int(input("\nWhat would you like to update?: "))
-
-    if value_choice == len(book_values):
-        return
-    key = list(book_choice.keys())[value_choice]
-    new_value = input(f"Enter new value for {key}: ")
-    book_choice[key] = new_value
-
-    save_library(cur_library)
-
-    print("\n---Updated Library---")
-    display_library()
-
-def delete_book():
-    display_library()
-    cur_library = load_library()
-
-    book_choice = int(input("\nWhich book would you like to delete?: "))
-
-    cur_library.pop(book_choice - 1)
-    for i, book in enumerate(cur_library, start=1):
-        book["id"] = i
-
-    save_library(cur_library)
-
-    print("\n---Updated Library---")
-    display_library()
-        
-def display_library():
-    library = load_library()
-    for book in library:
-        print(f"{book['id']}. {book['title']} by {book['author']} - {book['status']} | Current Volume: {book['currentVol']} | Current Chapter: {book['currentCh']}")
+    
+    while True: 
+        try: 
+            choice = int(input("\nWhat would you like to update?: "))
+            if 1 <= choice < len(book_values):
+                break
+            elif choice == len(book_values):
+                return None
+            else:
+                print("Please enter a valid number")
+        except ValueError:
+            print("Please enter a valid number")
+    
+    return list(book.keys())[choice]
