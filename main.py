@@ -4,26 +4,18 @@ print("Initializing...")
 tracker.create_library()
 
 while True:
-    print("\n---Menu---")
-    print("1. Display Library")
-    print("2. Add a Book")
-    print("3. Update a Book")
-    print("4. Delete a Book")
-    print("5. Quit")
-
-    choice = input("\nChoose an option: ")
-    if choice == "1":
-        print("\n---Library---")
-        tracker.display_library()
-    elif choice == "2":
-        print("\n---Add a Book---")
-        tracker.new_book()
-    elif choice == "3":
-        print("\n---Update a Book---")
-        tracker.update_book()
-    elif choice == "4":
-        print("\n---Delete a Book---")
-        tracker.delete_book()
-    elif choice == "5":
-        print("\nExiting...")
-        break
+    choice = tracker.menu()
+    match choice:
+        case "1":
+            tracker.display_library()
+        case "2":
+            tracker.add_book()
+        case "3":
+            tracker.update_book()
+        case "4":
+            tracker.delete_book()
+        case "5":
+            print("\nExiting...")
+            break
+        case _:
+            print("Invalid option, please try again")
