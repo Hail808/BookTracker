@@ -30,17 +30,13 @@ def display_library():
         print(f"{book['id']}. {book['title']} by {book['author']} - {book['status']} | " \
               f"Current Volume: {book['currentVol']} | Current Chapter: {book['currentCh']}")
 
-def add_book():
+def add_book(book):
     print("\n---Add a Book---")
     cur_library = load_library()
-
-    new_book = create_book(*get_book_input())
-    new_id = len(cur_library) + 1
-    new_book["id"] = new_id
-
-    add_to_library(new_book, cur_library)
-
-    display_library()
+    book["id"] = len(cur_library) + 1
+    cur_library.append(book)
+    save_library(cur_library)
+    return book
 
 def update_book():
     print("\n---Update a Book---")
