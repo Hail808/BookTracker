@@ -31,41 +31,18 @@ def display_library():
               f"Current Volume: {book['currentVol']} | Current Chapter: {book['currentCh']}")
 
 def add_book(book):
-    print("\n---Add a Book---")
     cur_library = load_library()
     book["id"] = len(cur_library) + 1
     cur_library.append(book)
     save_library(cur_library)
     return book
 
-def update_book():
-    print("\n---Update a Book---")
-    display_library()
+def update_book(book_id, key, value):
     cur_library = load_library()
-
-    # Get user book selection
-    while True:
-        try:
-            book_id = int(input("\nWhich book would you like to update?: "))
-            if 1 <= book_id <= len(cur_library):
-                break
-            else:
-                print("Please enter a valid number")
-        except ValueError:
-            print("Please enter a valid number")
-    # Then covert to the corresponding book dictionary
     selected_book = next(book for book in cur_library if book["id"] == book_id) 
-
-    # Display book value options for user and get value selection
-    key = get_book_value_choice(selected_book)
-    if key == None: # Cancel
-        return
-
-    new_value = input(f"Enter new value for {key}: ")
-    selected_book[key] = new_value
+    selected_book[key] = value
     save_library(cur_library)
-
-    display_library()
+    return selected_book
 
 def delete_book():
     print("\n---Delete a Book---")

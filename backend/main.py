@@ -13,6 +13,10 @@ class Book(BaseModel):
     currentVol: int
     currentCh: int
 
+class BookUpdate(BaseModel):
+    key: str
+    value: str
+
 @app.get("/books")
 def get_books():
     return tracker.load_library()
@@ -20,3 +24,7 @@ def get_books():
 @app.post("/books")
 def add_book(book: Book):
     return tracker.add_book(book.model_dump())
+
+@app.put("/books/{book_id}")
+def update_book(book_id: int, update: BookUpdate):
+    return tracker.update_book(book_id, update.key, update.value)
