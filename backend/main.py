@@ -28,3 +28,7 @@ def add_book(book: Book):
 @app.put("/books/{book_id}")
 def update_book(book_id: int, update: BookUpdate):
     return tracker.update_book(book_id, update.key, update.value)
+
+@app.delete("/books/{book_id}")
+def delete_book(book_id: int):
+    return tracker.delete_book(book_id)

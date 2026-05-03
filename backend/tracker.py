@@ -33,8 +33,7 @@ def display_library():
 def add_book(book):
     cur_library = load_library()
     book["id"] = len(cur_library) + 1
-    cur_library.append(book)
-    save_library(cur_library)
+    add_to_library(book, cur_library)
     return book
 
 def update_book(book_id, key, value):
@@ -44,24 +43,11 @@ def update_book(book_id, key, value):
     save_library(cur_library)
     return selected_book
 
-def delete_book():
-    print("\n---Delete a Book---")
-    display_library()
+def delete_book(book):
     cur_library = load_library()
+    delete_from_library(book, cur_library)
+    return book
 
-    while True:
-        try:
-            selected_book = int(input("\nWhich book would you like to delete?: "))
-            if 1 <= selected_book <= len(cur_library):
-                break
-            else:
-                print("Please enter a valid number")
-        except ValueError:
-            print("Please enter a valid number")
-
-    delete_from_library(selected_book, cur_library)
-
-    display_library()
 
 # ----- Extended Functions -----
 def create_book(title, author, status, curVol, curCh):
