@@ -1,2 +1,10 @@
+# Python
 __pycache__/
-library.json
+backend/venv/
+
+# Data
+backend/library.json
+
+# Node
+frontend/node_modules/
+frontend/.next/
